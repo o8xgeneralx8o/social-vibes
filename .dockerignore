@@ -1,0 +1,7 @@
+.next
+.gitignore
+node_modules
+package-lock.json
+Dockerfile
+docker-compose*
+README.md

@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model StandardUser {
+  id                String         @id @default(uuid())
+  givenName         String
+  email             String         @unique @db.VarChar(255)
+  avatar            String         @db.Text
+  followerTo        Follow[]       @relation("followerToId")
+  followedBy        Follow[]       @relation("followedById")
+  blockedThis       Block[]        @relation("blockedThisId")
+  blockedBy         Block[]        @relation("blockedById")
+  Post              Post[]
+  Comment           Comment[]
+  Like              Like[]
+  Notification      Notification[]
+  FirstParticipant  Conversation[] @relation("firstParticipant")
+  SecondParticipant Conversation[] @relation("secondParticipant")
+  Message           Message[]
+}
+
+model Follow {
+  id String @id @default(uuid())
+
+  followerTo   StandardUser   @relation("followerToId", fields: [followerToId], references: [id], onDelete: Cascade)
+  followerToId String
+  followedBy   StandardUser   @relation("followedById", fields: [followedById], references: [id], onDelete: Cascade)
+  followedById String
+  Notification Notification[]
+
+  @@unique([followerToId, followedById])
+  @@index([followerToId])
+  @@index([followedById])
+}
+
+model Block {
+  id            String       @id @default(uuid())
+  blockedThis   StandardUser @relation("blockedThisId", fields: [blockedThisId], references: [id], onDelete: Cascade)
+  blockedThisId String
+  blockedBy     StandardUser @relation("blockedById", fields: [blockedById], references: [id], onDelete: Cascade)
+  blockedById   String
+
+  @@unique([blockedThisId, blockedById])
+  @@index([blockedThisId])
+  @@index([blockedById])
+}
+
+model Post {
+  id           String         @id @default(uuid())
+  author       StandardUser   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String
+  body         String         @db.Text
+  createdAt    DateTime       @default(now())
+  MediaContent MediaContent[]
+  Comment      Comment[]
+  Like         Like[]
+}
+
+model MediaContent {
+  id        String    @id @default(uuid())
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String    @db.VarChar(255)
+  mediaType MediaType
+  url       String    @db.Text
+}
+
+model Comment {
+  id           String         @id @default(uuid())
+  author       StandardUser   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId     String
+  post         Post?          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId       String?
+  comment      Comment?       @relation("commentRepliedToId", fields: [commentId], references: [id], onDelete: Cascade)
+  commentId    String?
+  selfComment  Comment[]      @relation("commentRepliedToId")
+  body         String         @db.Text
+  createdAt    DateTime       @default(now())
+  Like         Like[]
+  Notification Notification[]
+}
+
+model Like {
+  id             String         @id @default(uuid())
+  standardUser   StandardUser   @relation(fields: [standardUserId], references: [id], onDelete: Cascade)
+  standardUserId String
+  post           Post?          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId         String?
+  comment        Comment?       @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId      String?
+  Notification   Notification[]
+}
+
+model Notification {
+  id              String       @id @default(uuid())
+  userToNotifie   StandardUser @relation(fields: [userIdToNotifie], references: [id], onDelete: Cascade)
+  userIdToNotifie String
+  like            Like?        @relation(fields: [likeId], references: [id], onDelete: Cascade)
+  likeId          String?
+  follow          Follow?      @relation(fields: [followId], references: [id], onDelete: Cascade)
+  followId        String?
+  comment         Comment?     @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId       String?
+  seen            Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+}
+
+model Conversation {
+  id                  String       @id @default(uuid())
+  firstParticipant    StandardUser @relation("firstParticipant", fields: [firstParticipantId], references: [id], onDelete: Cascade)
+  firstParticipantId  String
+  secondParticipant   StandardUser @relation("secondParticipant", fields: [secondParticipantId], references: [id], onDelete: Cascade)
+  secondParticipantId String
+  Message             Message[]
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  sender         StandardUser @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  senderId       String
+  body           String       @db.Text
+  seen           Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+}
+
+enum MediaType {
+  image
+  video
+}

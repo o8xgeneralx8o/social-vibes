@@ -1,0 +1,13 @@
+version: "3"
+services:
+  social-vibes:
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/social-vibes
+    environment:
+      - NODE_ENV=development
+  postgres: 
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}

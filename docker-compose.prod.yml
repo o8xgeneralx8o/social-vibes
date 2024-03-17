@@ -1,0 +1,8 @@
+version: "3"
+services:
+  social-vibes:
+    build:
+      context: .
+      target: production
+    environment:
+      - NODE_ENV=production
