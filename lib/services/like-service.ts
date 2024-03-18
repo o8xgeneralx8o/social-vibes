@@ -2,18 +2,17 @@ import prisma from "../db"
 import PaginationPreferences from "@/types/paginationPreferences-type"
 import { Like, likePublicInfo } from "@/types/like-type"
 import { StandardUserPublic, standardUserPublicInfo } from "@/types/standardUser-type"
-import { generateFromOptions, ModelName } from '@/lib/generateFromOptions';
 
 type LikeWithAllInfo = Like & { standardUser: StandardUserPublic }
 
 type LikeServices = {
-    likeSomething: (likeData: Like, modelName: ModelName) => Promise<LikeWithAllInfo>,
-    getForModel: (modelInfo: { modelId: string, modelName: ModelName }, notAllwedUsers: string[], paginationPreferences: PaginationPreferences) => Promise<LikeWithAllInfo[]>,
+    likeSomething: (likeData: Like) => Promise<LikeWithAllInfo>,
+    get: (modelInfo: { modelId: string, modelType: 'post' | 'comment' }, notAllwedUsers: string[], paginationPreferences: PaginationPreferences) => Promise<LikeWithAllInfo[]>,
     removeIt: (likeId: string) => Promise<Like>
 }
 
 const likeServices: LikeServices = {
-    likeSomething: async (likeData, modelName) => {
+    likeSomething: async (likeData) => {
         try {
             const modelId: string | null = likeData.postId ?? likeData.commentId;
             if (modelId === null)
@@ -27,7 +26,6 @@ const likeServices: LikeServices = {
                             id: likeData.standardUserId
                         }
                     },
-                    ...generateFromOptions(modelId, modelName, true)
                 },
                 select: {
                     ...likePublicInfo,
@@ -41,7 +39,7 @@ const likeServices: LikeServices = {
             throw (e);
         }
     },
-    getForModel: async ({ modelId, modelName }, notAllwedUsers, paginationPreferences) => {
+    get: async ({ modelId, modelType }, notAllwedUsers, paginationPreferences) => {
         try {
             return await prisma.like.findMany({
                 where: {
@@ -50,7 +48,7 @@ const likeServices: LikeServices = {
                             notIn: notAllwedUsers,
                         }
                     },
-                    ...generateFromOptions(modelId, modelName, false)
+                    [modelType]: modelId
                 },
                 select: {
                     ...likePublicInfo,

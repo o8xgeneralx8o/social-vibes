@@ -1,7 +1,6 @@
 import prisma from "../db"
 import PaginationPreferences from "@/types/paginationPreferences-type"
 import { Notification, notificationPublicInfo } from "@/types/notification-type"
-import { ModelName, generateFromOptions } from "../generateFromOptions"
 import { Like, likePublicInfo } from "@/types/like-type"
 import { Comment, commentPublicInfo } from "@/types/comment-type"
 import { Follow, followPublicInfo } from "@/types/follow-type"
@@ -9,12 +8,12 @@ import { Follow, followPublicInfo } from "@/types/follow-type"
 type AllNotificationInfo = Notification & { like: Like | null, comment: Comment | null, follow: Follow | null }
 
 type NotificationServices = {
-    getNotifications: (standardUserId: string, paginationPreferences: PaginationPreferences) => Promise<AllNotificationInfo[]>,
-    createOne: (notificationData: Notification, modelName: ModelName) => Promise<AllNotificationInfo>
+    get: (standardUserId: string, paginationPreferences: PaginationPreferences) => Promise<AllNotificationInfo[]>,
+    createOne: (notificationData: Notification) => Promise<AllNotificationInfo>
 }
 
 const notificationServices: NotificationServices = {
-    getNotifications: async (standardUserId, paginationPreferences) => {
+    get: async (standardUserId, paginationPreferences) => {
         try {
             return await prisma.notification.findMany({
                 where: {
@@ -38,7 +37,7 @@ const notificationServices: NotificationServices = {
             throw (e);
         }
     },
-    createOne: async (notificationData, modelName) => {
+    createOne: async (notificationData) => {
         try {
 
             const modelId: string | null = notificationData.commentId ?? notificationData.followId ?? notificationData.likeId;
@@ -56,7 +55,6 @@ const notificationServices: NotificationServices = {
                     },
                     seen: notificationData.seen,
                     createdAt: notificationData.createdAt,
-                    ...generateFromOptions(modelId, modelName, true),
                 },
                 select: {
                     ...notificationPublicInfo,
