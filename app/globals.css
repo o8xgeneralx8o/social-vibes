@@ -3,13 +3,92 @@
 @tailwind utilities;
 
 
-
 * {
   box-sizing: border-box;
 }
 
+@layer utilities {
+
+  .clip-signin-page-video {
+
+    clip-path: circle(75% at 0% 50%);
+
+  }
+
+}
 
 
+@layer components {
+  .custom-slate-border {
+    @apply border-slate-200 border;
+  }
+
+  .white-card {
+    @apply bg-white rounded-3xl custom-slate-border;
+  }
+}
+
+
+@keyframes changeColor {
+
+  0%,
+  25.999% {
+    @apply text-orange-vibes
+  }
+
+  33%, 60.999% {
+    @apply text-purple-vibes
+  }
+
+  66%, 90.999% {
+    @apply text-green-vibes
+  }
+
+  100% {
+    @apply text-orange-vibes
+  }
+}
+
+@keyframes changeBg {
+
+  0%,
+  25.999% {
+    @apply bg-orange-vibes
+  }
+
+  33%, 60.999% {
+    @apply bg-purple-vibes
+  }
+
+  66%, 90.999% {
+    @apply bg-green-vibes
+  }
+
+  100% {
+    @apply bg-orange-vibes
+  }
+}
+
+
+@keyframes changeBorderColor {
+
+  0%,
+  25.999% {
+    @apply border-orange-vibes
+  }
+
+  33%, 60.999% {
+    @apply border-purple-vibes
+  }
+
+  66%, 90.999% {
+    @apply border-green-vibes
+  }
+
+  100% {
+    @apply border-orange-vibes
+  }
+}
 
 
 /* 

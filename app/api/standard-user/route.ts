@@ -7,7 +7,7 @@ import { Session } from '@/types/modules/next-auth'
 import paginationPrefrences from "@/lib/paginationPrefrences";
 import errorMessage from "@/lib/errorMessage";
 import { NextApiRequest } from "next";
-
+// remove nextapirequest
 
 const GET = async (req: NextApiRequest) => {
     try {

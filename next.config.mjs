@@ -7,9 +7,16 @@ const nextConfig = {
                 hostname: 'lh3.googleusercontent.com',
                 port: '',
                 pathname: '/**'
+            },
+            {
+                protocol: 'https',
+                hostname: 'xsgames.co',
+                port: '',
+                pathname: '/**'
             }
         ]
     },
 };
 
 export default nextConfig;
+

@@ -13,7 +13,7 @@ export default function RootLayout({
 
             <NavBar />
 
-            <div className='flex-1 '>
+            <div className=' mt-20 '>
                 {children}
             </div>
         </div>
