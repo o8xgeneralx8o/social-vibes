@@ -11,10 +11,12 @@ const Avatar = () => {
             height={40}
             alt={'avatar'}
             className={`
+                 cursor-pointer
                  select-none
                 overflow-hidden 
                 rounded-full
-            `} />
+            `}
+        />
     )
 }
 

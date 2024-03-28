@@ -13,6 +13,12 @@ const nextConfig = {
                 hostname: 'xsgames.co',
                 port: '',
                 pathname: '/**'
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.w3schools.com',
+                port: '',
+                pathname: '/**'
             }
         ]
     },

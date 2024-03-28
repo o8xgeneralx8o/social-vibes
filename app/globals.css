@@ -26,6 +26,10 @@
   .white-card {
     @apply bg-white rounded-3xl custom-slate-border;
   }
+
+  .standard-shape {
+    @apply bg-white rounded-xl custom-slate-border;
+  }
 }
 
 

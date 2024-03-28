@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Oxygen } from "next/font/google";
 import "./globals.css";
 
-const roboto = Roboto({
-  weight: ["100", "300", "400", "500", "700", "900"],
+const oxygen = Oxygen({
+  weight: ["300", "400", "700"],
   subsets: ["latin"]
 });
+
+// const roboto = Roboto({
+//   weight: ["100", "300", "400", "500", "700", "900"],
+//   subsets: ["latin"]
+// })
 
 export const metadata: Metadata = {
   title: "Social Vibes",
@@ -20,7 +25,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={roboto.className}>
+      <body className={oxygen.className}>
         {children}
       </body>
     </html>
